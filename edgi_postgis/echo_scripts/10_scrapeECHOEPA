@@ -75,7 +75,7 @@ with open('files.csv', newline='') as csvfile:
                         '''
 
 print("running sql analyze...")
-engine.execute("analyze");
+engine.execute("analyze")
 
 #Clear up files
 #for csv in glob.glob("./CSV/*.csv"):

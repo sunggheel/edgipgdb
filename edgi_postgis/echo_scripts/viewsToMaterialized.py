@@ -51,6 +51,7 @@ def build(conn):
             #print ("creating index %s for table %s" %(index,view))
             conn.execute('create index "%s_%s" on "%s_MVIEW"("%s")' %(index,view,view,index))
         conn.execute('REFRESH MATERIALIZED VIEW  "%s_MVIEW"' % view)
-if __name__ == '__main__':
-    engine,whichDb= db_connect.connect()
-    build(engine)
+
+#if __name__ == '__main__':
+#    engine,whichDb= db_connect.connect()
+#    build(engine)

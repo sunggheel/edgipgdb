@@ -48,7 +48,7 @@ def build(conn):
         num = process_pgm( conn, pgm )
         print( "Program {} found {} ids".format( pgm[0], str(num)))
 
-if __name__ == '__main__':
-    import db_connect
-    engine,whichDb= db_connect.connect()
-    build(engine)
+#if __name__ == '__main__':
+#    import db_connect
+#    engine,whichDb= db_connect.connect()
+#    build(engine)
