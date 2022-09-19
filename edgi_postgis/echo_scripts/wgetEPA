@@ -1,0 +1,2 @@
+#!/bin/bash
+wget -T 30 --server-response --no-check-certificate -P ./zips $1   2> >(grep Modified) |sed 's/Last-Modified://'

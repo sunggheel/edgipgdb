@@ -1,0 +1,22 @@
+#! /bin/bash
+###
+### First, download/unzip the national WBD geodatabase (WBD_National_GDB.zip; 2.3 GB; monthly updated) from:
+###
+# https://prd-tnm.s3.amazonaws.com/index.html?prefix=StagedProducts/Hydrography/WBD/National/GDB/
+# Source: https://www.usgs.gov/national-hydrography/access-national-hydrography-products
+
+ogr2ogr -lco GEOMETRY_NAME=wkb_geometry -overwrite -f "PostgreSQL" PG:"host=localhost user=echoepa dbname=slim_echoepa" "WBD_National_GDB.gdb" "WBDHU8"
+psql -d slim_echoepa -U echoepa -c 'SELECT count(*) FROM wbdhu8;'
+#rows: 2400
+
+ogr2ogr -lco GEOMETRY_NAME=wkb_geometry -overwrite -f "PostgreSQL" PG:"host=localhost user=echoepa dbname=slim_echoepa" "WBD_National_GDB.gdb" "WBDHU10"
+# you may see the following warning message. Ignore it for now.
+# Warning 1: organizePolygons() received a polygon with more than 100 parts.  The processing may be really slow.
+psql -d slim_echoepa -U echoepa -c 'SELECT count(*) FROM wbdhu10;'
+#rows: 18853
+
+ogr2ogr -lco GEOMETRY_NAME=wkb_geometry -overwrite -f "PostgreSQL" PG:"host=localhost user=echoepa dbname=slim_echoepa" "WBD_National_GDB.gdb" "WBDHU12"
+# you may see the following warning message. Ignore it for now.
+# Warning 1: organizePolygons() received a polygon with more than 100 parts.  The processing may be really slow.
+psql -d slim_echoepa -U echoepa -c 'SELECT count(*) FROM wbdhu12;'
+#rows: 102992

@@ -1,0 +1,22 @@
+#! /bin/bash
+
+###
+### First, download the following tiger shapefiles and unzip them to the tiger/ folder.
+###
+# 2020 ZIP Code Tabulation Areas: https://www2.census.gov/geo/tiger/TIGER2020/ZCTA520/tl_2020_us_zcta520.zip
+# 2020 CD 116: https://www2.census.gov/geo/tiger/TIGER2020/CD/tl_2020_us_cd116.zip
+# 2020 County: https://www2.census.gov/geo/tiger/TIGER2020/COUNTY/tl_2020_us_county.zip
+# 2020 State: https://www2.census.gov/geo/tiger/TIGER2020/STATE/tl_2020_us_state.zip
+
+# -d option will drop the existing table, then recreates it and populates it with the given shapefile data.
+shp2pgsql -s 4269 -d -g wkb_geometry -D -I tiger/tl_2020_us_zcta520 public.tl_2020_us_zcta520 | psql -d slim_echoepa -U echoepa
+#rows: 33791
+
+shp2pgsql -s 4269 -d -g wkb_geometry -D -I tiger/tl_2020_us_cd116 public.tl_2020_us_cd116 | psql -d slim_echoepa -U echoepa
+#rows: 444
+
+shp2pgsql -s 4269 -d -g wkb_geometry -D -I tiger/tl_2020_us_county public.tl_2020_us_county | psql -d slim_echoepa -U echoepa
+#rows: 3234
+
+shp2pgsql -s 4269 -d -g wkb_geometry -D -I tiger/tl_2020_us_state public.tl_2020_us_state | psql -d slim_echoepa -U echoepa
+#rows: 56

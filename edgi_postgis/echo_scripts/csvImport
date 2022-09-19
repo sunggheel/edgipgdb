@@ -1,0 +1,3 @@
+#!/bin/bash
+dir=$(pwd)
+psql -U postgres -d slim_echoepa -c "\copy \"$1\" from '$dir/CSV/$1.csv' with CSV HEADER"

@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  echopgdb:
+    container_name: echopgdb
+    build:
+      dockerfile: edgi_postgis/Dockerfile    
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      # Be sure to create a mount point (edgipgdb_data) above the current working directory
+      - ../edgipgdb_data:/var/lib/postgresql/data # persist data even if container shuts down
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+    restart: always
