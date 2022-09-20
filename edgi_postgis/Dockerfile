@@ -30,3 +30,4 @@ ADD ./edgi_postgis/echo_scripts /echo_scripts
 COPY ./edgi_postgis/initdb-postgis.sh /docker-entrypoint-initdb.d/10_postgis.sh
 COPY ./edgi_postgis/initdb-edgi.sh /docker-entrypoint-initdb.d/20_echodb.sh
 COPY ./edgi_postgis/update-postgis.sh /usr/local/bin
+COPY ./edgi_postgis/prep-echoscripts.sh /

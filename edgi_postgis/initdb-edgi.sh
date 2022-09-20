@@ -21,11 +21,4 @@ GRANT SELECT ON ALL TABLES IN SCHEMA public TO echoepa_public;
 EOSQL
 
 # Create schemas for the slim_echoepa database
-psql -d slim_echoepa -f /echo_scripts/schema.sql
-
-# Install python3 modules for echo_scripts
-pip install psycopg2-binary
-pip install sqlalchemy
-pip install csvkit
-
-cp -R /echo_scripts /var/lib/posgresql/data
+psql -d slim_echoepa -f /echo_scripts/schema.psql
