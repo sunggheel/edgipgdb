@@ -1,9 +1,9 @@
 # EEW PostreSQL/PostGIS Database (PGDB) - Docker
 This repo contains configuration files and necessary scripts that can create a docker container for the EDGI EEW PostgreSQL/PostGIS database (PGDB).
 The scripts were modfied from the `edgi-govdata-archiving/ECHOEPA-to-SQL` (https://github.com/edgi-govdata-archiving/ECHOEPA-to-SQL) repo. The docker files were based on the `postgis/docker-postgis` (https://github.com/postgis/docker-postgis) with PostergreSQL 14 and PostGIS 3.3. 
-## Step
+## Creating the contrainer & loading data
 1. Set the password for the `postgres` user in the `.env` file. 
-2. Create a mount point to store persistent data (e.g. `edgipgdb_data`) and update the mount point in the `docker-compose.yml` file.
+2. Create a mount point to store persistent data (e.g. `edgipgdb_data`) and update the mount point in the `docker-compose.yml` file. Note: be sure to have an enough storage space (>200GB) for large source files (CSV files and GIS files: >43GB) and PGDB (>91GB) 
 3. Create the EEW PGDB container by running: 
 
         sudo docker compose up -d
