@@ -6,10 +6,10 @@ The scripts were modfied from the `edgi-govdata-archiving/ECHOEPA-to-SQL` (https
 2. Create a mount point to store persistent data (e.g. `edgipgdb_data`) and update the mount point in the `docker-compose.yml` file. Note: be sure to have an enough storage space (>200GB) for large source files (CSV files and GIS files: >43GB) and PGDB (>91GB) 
 3. Create the EEW PGDB container by running: 
 
-        sudo docker compose up -d
+        docker compose up -d
 4. Populate ECHO EPA data:
 
-        sudo docker exec -ti echopgdb /bin/bash
+        docker exec -ti echopgdb /bin/bash
         chmod +x prep-echoscripts.sh
         ./prep-echoscripts.sh
         cd /var/lib/postgresql/data/echo_scripts
