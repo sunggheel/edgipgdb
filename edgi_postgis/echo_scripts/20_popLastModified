@@ -13,26 +13,34 @@ os.chdir(os.path.dirname(sys.argv[0]))
 engine = create_engine("postgresql://postgres@localhost:5432/slim_echoepa", echo=False)
 
 #To compare number of rows in download csv to sql count(*)
-def popLastModified(table,zip,count):
-        m_time = os.path.getmtime("zips/%s" %zip)
+def popLastModified(table,zip):
+        m_time = os.path.getmtime("zips/%s" %(zip))
         modified = datetime.fromtimestamp(m_time).date()
-
-        file=open("CSV/%s.csv" %table)
-        reader=csv.reader(file)
-        csv_count=sum(1 for line in reader) - 1 
-        file.close()
-
         with engine.connect() as connection:
-            result = connection.execute('SELECT count(*) FROM \"%s\"' %table)
-            sql_count=list(result.fetchone())[0]
-            result2 = connection.execute("SELECT * FROM \"Last-Modified\" WHERE name = '%s'" %table)
-            if result2.rowcount == 0:
-                connection.execute("INSERT INTO \"Last-Modified\" (name,modified,zip,csv_count,sql_count) VALUES ('%s','%s','%s',%s,%s)" %(table,modified,zip,csv_count,sql_count))
-            else:
-                connection.execute("UPDATE \"Last-Modified\" SET csv_count=%s,sql_count=%s,modified='%s' WHERE name='%s'" %(csv_count,sql_count,modified,table ))
-        connection.close()
-        print("populated \"Last-Modified\" with \"csv_count\"=%s,\"sql_count\"=%s,\"modified\"=%s  where \"name\"='%s'" %(csv_count,sql_count,modified,table))
-        
+            result = connection.execute("SELECT modified FROM \"Last-Modified\" WHERE name = '%s'" %(table))
+            qryModified=list(result.fetchone())[0]
+        print("%s: %s, the \"Last-Modified\" table: %s" %(zip, modified, qryModified))
+
+        if modified != qryModified:
+            print("Counting lines in CSV and updating the table %s" %(table))
+            file=open("CSV/%s.csv" %(table))
+            reader=csv.reader(file)
+            csv_count=sum(1 for line in reader) - 1
+            file.close()
+
+            with engine.connect() as connection:
+                result = connection.execute('SELECT count(*) FROM \"%s\"' %(table))
+                sql_count=list(result.fetchone())[0]
+                result2 = connection.execute("SELECT * FROM \"Last-Modified\" WHERE name = '%s'" %(table))
+                if result2.rowcount == 0:
+                    connection.execute("INSERT INTO \"Last-Modified\" (name,modified,zip,csv_count,sql_count) VALUES ('%s','%s','%s',%s,%s)" %(table,modified,zip,csv_count,sql_count))
+                else:
+                    connection.execute("UPDATE \"Last-Modified\" SET csv_count=%s,sql_count=%s,modified='%s' WHERE name='%s'" %(csv_count,sql_count,modified,table ))
+                connection.close()
+            print("populated \"Last-Modified\" with \"csv_count\"=%s,\"sql_count\"=%s,\"modified\"=%s  where \"name\"='%s'" %(csv_count,sql_count,modified,table))
+        else:
+            print("No need to update!")
+
 with open('files.csv', newline='') as csvfile:
         dictrd = csv.DictReader(csvfile)
         num_csvfiles = len(list(dictrd))
@@ -44,5 +52,5 @@ with open('files.csv', newline='') as csvfile2:
                         table=row['CSV FILE']
                         location=row['Location']
                         count += 1
-                        print("[%s/%s] Checking table: %s ..." % (count,num_csvfiles,table))
-                        popLastModified(table,location,count)
+                        print("[%s/%s] Checking table: %s.csv ..." % (count,num_csvfiles,table))
+                        popLastModified(table,location)

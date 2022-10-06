@@ -1,0 +1,94 @@
+#!/usr/bin/env python3 
+#Imports
+import csv
+import csvkit
+import os
+import signal
+import sys
+import subprocess
+from datetime import datetime
+import glob
+#import db_connect
+#import EXP_PGM as pgm #script for creating views based on raw ECHOEPA data
+#import viewsToMaterialized as mview #script which creates materialized views of view 
+import re
+from sqlalchemy import create_engine
+
+#Set paths
+os.chdir(os.path.dirname(sys.argv[0]))
+
+#Connect to DB
+engine = create_engine("postgresql://postgres@localhost:5432/slim_echoepa", echo=False)
+#engine,whichDb= db_connect.connect()
+
+# Truncate
+def truncate(table):
+        print ("truncating %s"%(table))
+        try:
+            with engine.connect() as connection:
+                connection.execute('truncate "%s"' %(table))
+        except Exception as e:
+                print (sys.exc_info()[0])
+                print (e.__class__.__name__)
+                sys.exit("Exit")
+
+#Open list of files to scrape and add
+with open('files_exception.csv', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        uniqueZips={}
+        for row in reader:
+                        table=row['CSV FILE']
+                        location=row['Location']
+                        url=row['URL']
+                        if location not in uniqueZips.keys():
+                                uniqueZips[location] = row
+                                if not os.path.isfile('zips/%s' %(location)):
+                                        modified=""
+                                        while(modified==""):
+                                                print("Getting %s" %(url))
+                                                print("reading the modified date from the wegetEPA script...")
+                                                modified = subprocess.check_output("./wgetEPA %s" %(url), shell=True).decode("utf-8").strip().splitlines()[0]
+                                        with engine.connect() as connection:
+                                            results = connection.execute("UPDATE \"Last-Modified\" SET modified='%s' WHERE zip = '%s' AND name= '%s'" %(modified,location,table))
+                                        if results.rowcount == 0:
+                                            with engine.connect() as connection:
+                                                results = connection.execute("INSERT INTO \"Last-Modified\" (name,modified,zip) VALUES ('%s','%s','%s')" %(table,modified,location))
+                                if not os.path.isfile('CSV/%s.csv' %(table)):
+                                        print('Missing CSV file: CSV/%s ...' %(table))
+                                        if re.match("csv$",url.lower()):
+                                                print("moving the file....%s" %(location))
+                                                os.rename("zips/"+location, "CSV/"+location) #move file
+                                        elif ".zip" in url.lower():
+                                                print("extracting CSV files from the zip file...%s %s" %(location, table))
+                                                os.system("./unzipEPA %s %s.csv" %(location,table)) #Unzip
+                        try:
+                            with engine.connect() as connection:
+                                test = connection.execute("select 'public.\"%s\"'::regclass" %(table))
+                        except:
+                            print("no schema yet exists")
+                            t = subprocess.check_output("./createTable %s" %(table), shell=True).decode("utf-8").strip()
+                                #create the table
+                            with engine.connect() as connection:
+                                connection.execute(t)
+
+                        #print("strip nulls")
+                        os.system("./stripNulls %s" %(table)) #some csvs failed to import with nulls. this also cuts the CSV (head command)
+                        truncate(table) # truncate deletes existing rows in a table
+                        print ("truncated %s"%(table))
+                        #process = subprocess.Popen(["./csvImport",table,whichDb], stdout=subprocess.PIPE, preexec_fn=os.setsid, stderr=subprocess.PIPE)
+                        #out, err = process.communicate()
+                        #os.killpg(os.getpgid(process.pid), signal.SIGTERM) 
+                        os.system("./csvImport %s" %(table))
+                        '''
+                        if err:
+                                os.system("./tools/csvsqlEPACreate_pg %s %s" %(table,whichDb))
+                        '''
+
+print("running sql analyze...")
+engine.execute("analyze")
+
+#Clear up files
+#for csv in glob.glob("./CSV/*.csv"):
+#        os.remove(csv)          
+#for zip in glob.glob("./zips/*.zip"):
+#        os.remove(zip)

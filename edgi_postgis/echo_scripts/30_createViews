@@ -22,4 +22,5 @@ print("creating materialized views...")
 mview.build(engine) #materialized views
 
 print("running sql analyze...")
-engine.execute("analyze")
+engine.execute("GRANT SELECT ON ALL TABLES IN SCHEMA public TO echoepa_public;")
+engine.execute("ANALYZE;")
