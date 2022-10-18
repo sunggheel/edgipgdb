@@ -2049,7 +2049,7 @@ CREATE TABLE public."ICIS_PERMITS" (
     "TMDL_INTERFACE_FLAG" boolean,
     "EDMR_AUTHORIZATION_FLAG" boolean NOT NULL,
     "PRETREATMENT_INDICATOR_CODE" character varying,
-    "WBD_HUC12" numeric
+    "WBD_HUC12" character varying
 );
 
 
