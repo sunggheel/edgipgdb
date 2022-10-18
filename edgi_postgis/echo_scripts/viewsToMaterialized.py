@@ -20,6 +20,7 @@ def build(conn):
     "TOXIC_RELEASES",
     "WATER_QUARTERLY_VIOLATIONS",
     "DMR_FY2020",
+    "DMR_FY2022",
     "EFF_VIOLATIONS",
     "CASE_ENFORCEMENTS"
     ]
@@ -39,7 +40,7 @@ def build(conn):
     "FAC_POP_DEN",
     "FAC_DERIVED_HUC",
     "FAC_SIC_CODES",
-    "FAC_NAICS_CODES",
+    "FAC_NAICS_CODES"
     #"FAC_DERIVED_CB2010"
     ]
     
