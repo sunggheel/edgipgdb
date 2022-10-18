@@ -12,6 +12,8 @@ chmod +x /var/lib/postgresql/data/echo_scripts/00_wgetGSheet
 chmod +x /var/lib/postgresql/data/echo_scripts/10_scrapeECHOEPA
 chmod +x /var/lib/postgresql/data/echo_scripts/20_popLastModified
 chmod +x /var/lib/postgresql/data/echo_scripts/30_createViews
+chmod +x /var/lib/postgresql/data/echo_scripts/80_redownloadCSV
+chmod +x /var/lib/postgresql/data/echo_scripts/90_fixExceptionCSVImport
 chmod +x /var/lib/postgresql/data/echo_scripts/createTable
 chmod +x /var/lib/postgresql/data/echo_scripts/csvImport
 chmod +x /var/lib/postgresql/data/echo_scripts/stripNulls

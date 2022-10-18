@@ -18,7 +18,7 @@ The scripts were modfied from the `edgi-govdata-archiving/ECHOEPA-to-SQL` (https
         ./20_popLastModified
         ./30_createViews
 
-Note: Be sure to maintain the up-to-date Google Sheet. Refer to both **Date Data Extracted** on the `ECHO Data Sources and Refresh Dates` (https://echo.epa.gov/resources/echo-data/about-the-data#sources) and **Last modified** on the file download directory (https://echo.epa.gov/files/echodownloads/).
+Note: Be sure to maintain the up-to-date Google Sheet. Refer to both **Date Data Extracted** on the `ECHO Data Sources and Refresh Dates` (https://echo.epa.gov/resources/echo-data/about-the-data#sources) and **Last modified** on the file download directory (https://echo.epa.gov/files/echodownloads/). Before running the scripts to update existing tables, be sure to remove files in the zips and CSV folders.
 
 5. Populate spatial tables (Census TIGER files and USGS WBD). Go to `spatial` folder and download/unzip tiger files to the `tiger` folder as instructed in the `loadTIGER` file. 
         
