@@ -2,7 +2,7 @@
 #Imports
 import csv
 #import csvkit
-import os 
+import os
 import signal
 import sys
 import subprocess
@@ -26,7 +26,17 @@ def truncate(table):
         except Exception as e:
                 print (sys.exc_info()[0])
                 print (e.__class__.__name__)
-                sys.exit("Exit") 
+                sys.exit("Exit")
+
+# Convert the ECHO_EXPORTER table into a non-spatial table
+print("Dropping the geometry index from the ECHO_EXPORTER table...")
+engine.execute("DROP INDEX echo_exporter_geom_idx;")
+
+print("Dropping the geometry column from the ECHO_EXPORTER table...")
+sql1="""
+ALTER TABLE "ECHO_EXPORTER" DROP COLUMN "wkb_geometry";
+"""
+engine.execute(sql1)
 
 #Open list of files to scrape and add
 with open('files.csv', newline='') as csvfile:
@@ -77,8 +87,30 @@ with open('files.csv', newline='') as csvfile:
 print("running sql analyze...")
 engine.execute("analyze")
 
-#Clear up files
-#for csv in glob.glob("./CSV/*.csv"):
-#        os.remove(csv)          
-#for zip in glob.glob("./zips/*.zip"):
-#        os.remove(zip)
+# Convert the ECHO_EXPORTER table into a spatial table
+print("Adding the geometry column from the ECHO_EXPORTER table...")
+sql2="""
+ALTER TABLE "ECHO_EXPORTER" ADD COLUMN "wkb_geometry" geometry(Point, 4269);
+"""
+engine.execute(sql2)
+
+print("Populating the geometry column in the ECHO_EXPORTER table...")
+sql3="""
+UPDATE "ECHO_EXPORTER"                                              
+  SET wkb_geometry = ST_SetSRID(ST_MakePoint("FAC_LONG", "FAC_LAT"), 4269);
+"""
+engine.execute(sql3)
+
+print("Creating a spatial index for the ECHO_EXPORTER table...")
+sql4="""
+CREATE INDEX echo_exporter_geom_idx
+  ON "ECHO_EXPORTER"
+    USING GIST (wkb_geometry);
+"""
+engine.execute(sql4)
+
+print("Analyzing the ECHO_EXPORTER table...")
+sql5="""
+ANALYZE "ECHO_EXPORTER";
+"""
+engine.execute(sql5)
