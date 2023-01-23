@@ -15,7 +15,8 @@ os.chdir(os.path.dirname(sys.argv[0]))
 #Connect to DB
 engine = create_engine("postgresql://postgres@localhost:5432/slim_echoepa", echo=False)
 
-#Download all zip files in the files.csv and unzip them, then stripping nulls from the csv files.
+# Run this script when you need to re-download zip files in the files.csv file, unzip them,
+# then strip nulls from the csv files only. 
 with open('files.csv', newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         uniqueZips={}
