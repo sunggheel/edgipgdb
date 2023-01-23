@@ -3,6 +3,7 @@
 import csv
 import os 
 import sys
+import glob
 from datetime import datetime
 from sqlalchemy import create_engine
 
@@ -51,3 +52,9 @@ with open('files.csv', newline='') as csvfile2:
                         count += 1
                         print("[%s/%s] Checking table: %s.csv ..." % (count,num_csvfiles,table))
                         popLastModified(table,location)
+
+#Clear up files
+for csv in glob.glob("./CSV/*.csv"):
+        os.remove(csv)
+for zip in glob.glob("./zips/*.zip"):
+        os.remove(zip)
