@@ -32,7 +32,10 @@ def truncate(table):
                 print (e.__class__.__name__)
                 sys.exit("Exit")
 
-#Open list of files to scrape and add
+# Run this script when you need to import a few selected tables in the files_exception.csv file only. 
+# Be sure not to include 'ECHO_EXPORTER' table which should be handled in the 10_scrapeECHOEPA script.
+# After this script, run 20_popLastModified and 30_createViews (if needed) 
+
 with open('files_exception.csv', newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         uniqueZips={}
