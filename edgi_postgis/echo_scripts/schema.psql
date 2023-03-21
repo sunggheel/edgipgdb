@@ -2235,6 +2235,8 @@ CREATE TABLE public."NPDES_LIMITS" (
     "PERM_FEATURE_TYPE_CODE" character varying NOT NULL,
     "LIMIT_SET_ID" numeric NOT NULL,
     "LIMIT_SET_DESIGNATOR" character varying NOT NULL,
+    "LIMIT_SET_NAME" character varying,
+    "DMR_COMMENT_TEXT" character varying,
     "LIMIT_SET_SCHEDULE_ID" numeric NOT NULL,
     "LIMIT_SET_STATUS_FLAG" character varying,
     "LIMIT_ID" numeric NOT NULL,
