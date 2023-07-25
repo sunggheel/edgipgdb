@@ -45,7 +45,7 @@ CREATE UNLOGGED TABLE public."ECHO_EXPORTER" (
     "FAC_ZIP" character varying(10),
     "FAC_COUNTY" text,
     "FAC_FIPS_CODE" double precision,
-    "FAC_EPA_REGION" double precision,
+    "FAC_EPA_REGION" character(2),
     "FAC_INDIAN_CNTRY_FLG" text,
     "FAC_FEDERAL_FLG" text,
     "FAC_US_MEX_BORDER_FLG" text,
@@ -2333,7 +2333,7 @@ ALTER TABLE public."NPDES_QNCR_HISTORY" OWNER TO echoepa;
 
 CREATE UNLOGGED TABLE public."NPDES_SE_VIOLATIONS" (
     "NPDES_ID" character varying(20),
-    "NPDES_VIOLATION_ID" bigint,
+    "NPDES_VIOLATION_ID" numeric,
     "VIOLATION_TYPE_CODE" text,
     "VIOLATION_CODE" text,
     "VIOLATION_DESC" text,
